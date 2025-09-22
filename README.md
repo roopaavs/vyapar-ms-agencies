@@ -169,6 +169,6 @@ If you find this project helpful, please give it a ⭐ on GitHub!
 
 ---
 
-**Author**: MiniMax Agent  
+Abdul Basit Darwesh
 **Created**: 2025  
 **Flutter Version**: 3.x+
