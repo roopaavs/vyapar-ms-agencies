@@ -8,6 +8,15 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
+      - name: Fix folder structure
+        script: |
+          mkdir -p lib
+          mv main.dart lib/main.dart || true
+          mv *_screen.dart lib/ || true
+          mv *_provider.dart lib/ || true
+          mv *.dart lib/ || true
+          ls -la
+          ls -la lib/
       - name: Get packages
         script: flutter pub get
       - name: Build APK
