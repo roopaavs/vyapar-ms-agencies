@@ -1,0 +1,63 @@
+workflows:
+  android-release:
+    name: Real Vyapar with DB - FINAL
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      flutter: 3.22.3
+      xcode: latest
+    scripts:
+      - name: Build Real Vyapar - Create Android folder
+        script: |
+          # 1. Save your real code from template
+          git clone https://github.com/Lazdisas/vyapar-flutter-app.git /tmp/orig
+          ls /tmp/orig/lib
+          
+          # 2. Create a fresh Flutter project to generate android/ folder
+          cd /tmp
+          flutter create vyapar_temp --platforms=android --org=com.msagencies.vyapar
+          cd -
+          
+          # 3. Now rebuild your repo with correct structure
+          rm -rf android ios lib pubspec.yaml
+          cp -r /tmp/vyapar_temp/android .
+          cp -r /tmp/orig/lib .
+          cp /tmp/orig/pubspec.yaml .
+          
+          # 4. Fix pubspec to work with Flutter 3.22
+          cat > pubspec.yaml <<'YAML'
+          name: vyapar_app
+          description: Vyapar Real Billing with Customer Product DB - MS Agencies
+          publish_to: 'none'
+          version: 1.0.0+1
+          environment:
+            sdk: ">=3.2.0 <4.0.0"
+          dependencies:
+            flutter:
+              sdk: flutter
+            cupertino_icons: ^1.0.6
+            provider: ^6.1.2
+            sqflite: ^2.3.3
+            path: ^1.8.3
+            intl: ^0.19.0
+            shared_preferences: ^2.2.2
+            fl_chart: ^0.68.0
+            path_provider: ^2.1.1
+          dev_dependencies:
+            flutter_test:
+              sdk: flutter
+            flutter_lints: ^3.0.0
+          flutter:
+            uses-material-design: true
+          YAML
+
+          ls android/app/build.gradle
+          ls lib/main.dart
+          ls lib/models/
+
+      - name: Get packages
+        script: flutter pub get
+      - name: Build REAL APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
